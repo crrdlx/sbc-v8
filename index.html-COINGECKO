@@ -22,16 +22,15 @@
     a:hover { background: #b6cff9; text-decoration: underline; }
     a:active { background-color: #427fed; color: white; }
     h1 { font-size: 2.2em; text-align: center; }
-    input[type=text] { width: 135px; } /* Reverted to original */
+    input[type=text] { width: 135px; }
     select { margin: 0.5em; padding: 0.2em; }
     smalltype { font-style: normal; font-size: 65%; color: #000000; }
     .nav-links, .footer, .price-info { text-align: center; margin: 0.5em 0; }
     .nav-links a, .footer a { margin: 0 0.5em; }
-    .form-container { max-width: 350px; margin: 0 auto; text-align: left; } /* Reverted from 400px */
+    .form-container { max-width: 300px; margin: 0 auto; text-align: left; }
     .form-container td { padding: 0.3em 0; }
     #customCoin, #customFiat { width: 60px; margin: 0.5em; padding: 0.2em; }
-    #coinDisplay { width: 200px; display: inline-block; vertical-align: middle; } /* Widened for ticker + name */
-    .beta-notice { font-style: italic; font-size: 0.8em; color: #555; margin: 0.5em 0; }
+    .beta-notice { font-size: 0.8em; color: #555; margin: 0.5em 0; }
     .disclaimer { font-style: italic; font-size: 0.8em; color: #555; margin: 1em 0; }
   </style>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -41,7 +40,8 @@
     <div class="w3-container" style="text-align: center;">
       <a href="index.html" class="w3-button w3-round-large w3-orange"> シ Satoshi Bitcoin Converter.com</a><br>
     </div><br>
-    <div style="text-align: center;" class="beta-notice">SBC-v8 beta - use at your own risk. See disclaimer below.</div>
+    <div style="text-align: center;" class="beta-notice">SBC-v8 beta - use at your own risk</div>
+    <div style="text-align: center;"><small>Convert BTC (or enter an altcoin symbol), choose a fiat currency (or enter a fiat symbol), then enter a value.</small></div>
 
     <!-- Dropdowns and Custom Inputs -->
     <div style="text-align: center;">
@@ -73,7 +73,7 @@
           <tbody>
             <tr>
               <td>
-                <input type="text" inputmode="numeric" onkeyup="coinConvert()" value="" name="coin" size="12"> <span id="coinDisplay">฿ BTC - Bitcoin</span>
+                <input type="text" inputmode="numeric" onkeyup="coinConvert()" value="" name="coin" size="12"> <span id="coinSymbol">฿</span> <span id="coinName">BTC</span>
               </td>
             </tr>
             <tr>
@@ -133,16 +133,14 @@
       let currentPrice = 0;        // Price of selected altcoin in selected fiat
       let altcoinToBtcPrice = 0;   // Price of selected altcoin in BTC
 
-      // Map ticker symbols to full names
-      const coinNames = {
-        "BTC": "Bitcoin",
-        "ETH": "Ethereum",
-        "LTC": "Litecoin",
-        "XRP": "Ripple",
-        "SOL": "Solana",
-        "DOGE": "Dogecoin",
-        "WLD": "Worldcoin",
-        "CBBTC": "Coinbase Wrapped BTC"
+      // Map ticker symbols to CoinGecko IDs
+      const coinGeckoIds = {
+        "BTC": "bitcoin",
+        "ETH": "ethereum",
+        "LTC": "litecoin",
+        "XRP": "ripple",
+        "SOL": "solana",
+        "DOGE": "dogecoin"
       };
 
       function init() {
@@ -150,43 +148,38 @@
       }
 
       function updatePrices() {
-        let customCoin = document.getElementById("customCoin").value.trim().toUpperCase();
-        let customFiat = document.getElementById("customFiat").value.trim().toUpperCase();
+        const customCoin = document.getElementById("customCoin").value.trim().toUpperCase();
+        const customFiat = document.getElementById("customFiat").value.trim().toUpperCase();
         altcoinSelected = customCoin || document.getElementById("altcoin").value;
         fiatSelected = customFiat || document.getElementById("fiat").value;
 
-        // Force uppercase in input fields
-        document.getElementById("customCoin").value = customCoin;
-        document.getElementById("customFiat").value = customFiat;
+        // Use mapped CoinGecko ID or assume custom input is a valid ID (lowercase)
+        const coinId = coinGeckoIds[altcoinSelected] || altcoinSelected.toLowerCase();
 
         // Update UI labels
         const coinSymbols = { BTC: "฿", ETH: "Ξ", LTC: "Ł", XRP: "ꭓ", SOL: "◎", DOGE: "Ð" };
         const fiatSymbols = { USD: "$", GBP: "£", EUR: "€", CAD: "C$", AUD: "A$", INR: "₹", JPY: "¥", KRW: "₩", CHF: "CHF" };
-        
-        // Combine symbol, ticker, and name for coin display
-        const symbol = coinSymbols[altcoinSelected] || "";
-        const name = coinNames[altcoinSelected] || altcoinSelected; // Fallback to ticker if name unknown
-        document.getElementById("coinDisplay").textContent = `${symbol} ${altcoinSelected} - ${name}`;
-        
+        document.getElementById("coinSymbol").textContent = coinSymbols[altcoinSelected] || "?";
+        document.getElementById("coinName").textContent = altcoinSelected;
         document.getElementById("fiatSymbol").textContent = fiatSymbols[fiatSelected] || "";
         document.getElementById("fiatName").textContent = fiatSelected;
         document.getElementById("coinNamePrice").textContent = altcoinSelected;
         document.getElementById("fiatNamePrice").textContent = fiatSelected;
         document.getElementById("fiatNameFooter").textContent = `${fiatSelected}`;
 
-        // Fetch price data
+        // Fetch price data from CoinGecko
         $.ajax({
-          url: `https://min-api.cryptocompare.com/data/price?fsym=${altcoinSelected}&tsyms=${fiatSelected},BTC`,
+          url: `https://api.coingecko.com/api/v3/simple/price?ids=${coinId}&vs_currencies=${fiatSelected.toLowerCase()},btc`,
           method: "GET",
           dataType: "json",
           success: function(data) {
-            if (data.Response === "Error") {
-              $("#coinPrice").text("Error: Invalid symbol or API unavailable");
-              console.error("API Error:", data.Message);
+            if (!data[coinId] || typeof data[coinId][fiatSelected.toLowerCase()] === "undefined") {
+              $("#coinPrice").text("Error: Invalid coin or fiat symbol");
+              console.error("API Error: No data for", coinId, "in", fiatSelected, "Response:", data);
               return;
             }
-            currentPrice = parseFloat(data[fiatSelected]) || 0;
-            altcoinToBtcPrice = parseFloat(data["BTC"]) || (altcoinSelected === "BTC" ? 1 : 0);
+            currentPrice = parseFloat(data[coinId][fiatSelected.toLowerCase()]) || 0;
+            altcoinToBtcPrice = parseFloat(data[coinId]["btc"]) || (altcoinSelected === "BTC" ? 1 : 0);
             $("#coinPrice").text(currentPrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
             coinConvert(); // Recalculate on update
           },

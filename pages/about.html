@@ -115,25 +115,25 @@ h6 {
 
 <p style="text-align:left">The Satoshi Bitcoin Converter (SBC) started in <a href="https://bitcointalk.org/index.php?topic=239948.msg2541921#msg2541921" target="_blank">June of 2013</a> when I kept confusing bitcoin units. It helped me, so I put it on a website. My thought was that this would be my tiny, tiny contribution to Bitcoin. I hope you find it useful.</p>
 
-<p> In a couple of years, it migrated over to become a native Android app. It gained traction and has been used around the world, see the map <a href="../pages/dev_notes.html">here</a>. The Android app can still be found in the <a href="https://play.google.com/store/apps/details?id=com.satoshi.bitcoin.converter&hl=en_US">Google Play store</a>, however, it's no longer maintained. At this point, I highly recommend using the <a href="https://satoshibitcoinconverter.com">PWA</a> (the web app) instead of the Android app. The Android app is outdated.</p>
+<p> In a couple of years, it migrated over to become a native Android app. It gained traction and has been used around the world, see the map <a href="../pages/dev_notes.html">here</a>. The Android app can still be found in the <a href="https://play.google.com/store/apps/details?id=com.satoshi.bitcoin.converter&hl=en_US">Google Play store</a>, however, it's no longer maintained and it's advised to not use it. At this point, I highly recommend using the <a href="https://satoshibitcoinconverter.com">PWA</a> (the web app) instead of the Android app. The Android app is outdated.</p>
 
 <p style="text-align:left">In April of 2020, the Satoshi Bitcoin Converter returned to its web app roots. As a web app, the hope was that the converter could reach across platforms, devices, and operating systems.</p>
 
-<p style="text-align:left">With version 7.0, in July 2023, the Satoshi Bitcoin Converter made another step forward by reaching back to its original roots. To get back to how it existed when SBC began, only Bitcoin is included with v7. For persistence, the SBC-v7 version still resides <a href="https://sbc-v7.vercel.app">here</a>, though it is no longer maintained.</p>
+<p style="text-align:left">With version 7 (v7), in July 2023, the Satoshi Bitcoin Converter made another step forward by reaching back to its original roots. To get back to how it existed when SBC began, only Bitcoin is included with v7. For persistence, the SBC-v7 version still resides <a href="https://sbc-v7.vercel.app">here</a>, though it is no longer maintained.</p>
   
-<p style="text-align:left">Also with v7, the SBC now exists as a true Progressive Web App (PWA) and therefore can be installed on your device, mobile or desktop. This allows for (1) taking up much less storage space on your device, (2) auto updates (may need to clear cache to see updates), (3) use on nearly any modern OS or device, and (4) freedom from app stores. Mostly, it's just <i>simple and it works.</i></p>
+<p style="text-align:left">Also with v7, the SBC emerged as a true Progressive Web App (PWA) meaning it can be installed on your device, mobile or desktop. This allows for (1) taking up much less storage space on your device, (2) auto updates (you may need to clear cache to see updates), (3) use on nearly any modern OS or device, and (4) freedom from app stores. Mostly, the Satoshi Bitcoin Converter is just <i>simple and it works.</i></p>
 
-<p style="text-align:left">Version 8 came out in April of 2025. V8 is a redesign in the architecture of the Satoshi Bitcoin Converter with the goal of streamlining the backend. Bitcoin is still the default, go-to coin and USD the default fiat currency. However, users can choose other altcoins or fiat if they wish.</p>
+<p style="text-align:left">Version 8 came out in April of 2025. V8 is a redesign in the architecture of the Satoshi Bitcoin Converter with the goals of (1) streamlining the backend and (2) allowing for more options. Bitcoin is still the default, go-to coin and always will be. USD is still the default fiat currency. However, users are now able to choose an altcoin or other fiat currency if they wish.</p>
 
-<p style="text-align:left">The Satoshi Bitcoin Converter is open source. The code can be viewed at <a href="https://github.com/crrdlx/satoshi-bitcoin-converter" target="_blank">https://github.com/crrdlx/satoshi-bitcoin-converter</a>. Help is welcome.</p>
+<p style="text-align:left">The Satoshi Bitcoin Converter will be open source. The code can be viewed at <a href="https://github.com/crrdlx/sbc-v8" target="_blank">https://github.com/crrdlx/sbc-v8</a>. Help is welcome.</p>
 
 <h4>Is / Is not</h4>
 
 <p style="text-align:left">This app is for quickly converting between Bitcoin decimals and satoshis (sats). It's for seeing the value of that BTC or those sats in USD dollars. Also, the SBC app is for going the other way, from USD to sats. It answers questions like, "My coffee costs $1.75. How many sats is that?" Or, "I just got a zap of 100 satoshis, how much is that worth in USD?"</p>
 
-<p style="text-align:left">The <a href="../archive/legacy-20230716/index.html">legacy version</a> of this app (pre-v7) had other fiat currencies and other cryptocurrencies. It was <i>not</i> for fiat-to-fiat conversions, like USD-to-EUR. Also, it was <i>not</i> for crypto-to-crypto conversions, like BTC-to-ETH.</p>
+<p style="text-align:left">With v8, this app is for quickly converting between a user's selected altcoin and fiat currency of choice.</p>
 
-<p style="text-align:left">The app <i>was</i> for fiat-to-crypto conversions <i>and</i> for converting units within each crypto. For instance, how much, in EUR, is 1000 "bits"? And how much in BTC is that? Or, "I've got $10, how much BTC can I buy?"" Or, "Someone zapped me 500 satoshi, how much is that worth in my local currency?"</p>
+<p style="text-align:left">This app is NOT for serious trading or financial conversions. Although I think things are correct, there may be conversion errors...there are no guarantees here. Always double-check other sources.</p>
 
 <h4>General notes</h4>
 
@@ -146,9 +146,8 @@ h6 {
   <p></p>
   <li><a href="../pages/privacy.html">Privacy Policy</a></li>
   <p></p>
-  <li>Exchange rates powered by <a href="https://www.cryptocompare.com/api" target="_blank">CryptoCompare</a></li>
+  <li>Exchange rates powered by <a href="https://www.coingecko.com/en/api" target="_blank">CoinGecko API</a> or <a href="https://www.cryptocompare.com/api" target="_blank">CryptoCompare.com API</a></li>
   <p></p>
-  <li>The "cm/inch/feet converter" was developed by Ada Shimar ada@chalktv.com and is modified and used here. For this script and more, visit <a href="http://javascriptkit.com" target="_blank">javascriptkit.com</a>.</li>
 </ul>
 
 <p style="text-align:left">Please realize that I do this during my limited spare time. Take it for what it is...a free app, with no advertisements. I do this just for the satisfaction of making something that works, for the bitcoin community, and with the hope that it might help someone in some small way.</p>
