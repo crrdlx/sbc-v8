@@ -22,17 +22,21 @@
     a:hover { background: #b6cff9; text-decoration: underline; }
     a:active { background-color: #427fed; color: white; }
     h1 { font-size: 2.2em; text-align: center; }
-    input[type=text] { width: 135px; } /* Reverted to original */
+    input[type=text] { width: 135px; }
     select { margin: 0.5em; padding: 0.2em; }
     smalltype { font-style: normal; font-size: 65%; color: #000000; }
     .nav-links, .footer, .price-info { text-align: center; margin: 0.5em 0; }
     .nav-links a, .footer a { margin: 0 0.5em; }
-    .form-container { max-width: 350px; margin: 0 auto; text-align: left; } /* Reverted from 400px */
+    .form-container { max-width: 350px; margin: 0 auto; text-align: left; }
     .form-container td { padding: 0.3em 0; }
     #customCoin, #customFiat { width: 60px; margin: 0.5em; padding: 0.2em; }
-    #coinDisplay { width: 200px; display: inline-block; vertical-align: middle; } /* Widened for ticker + name */
+    #coinDisplay { width: 150px; display: inline-block; vertical-align: middle; } /* Reduced from 200px */
     .beta-notice { font-style: italic; font-size: 0.8em; color: #555; margin: 0.5em 0; }
     .disclaimer { font-style: italic; font-size: 0.8em; color: #555; margin: 1em 0; }
+    /* Mobile adjustment */
+    @media (max-width: 600px) {
+      .form-container { margin-left: 15%; } /* Shifts form right on mobile */
+    }
   </style>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
@@ -41,7 +45,7 @@
     <div class="w3-container" style="text-align: center;">
       <a href="index.html" class="w3-button w3-round-large w3-orange"> シ Satoshi Bitcoin Converter.com</a><br>
     </div><br>
-    <div style="text-align: center;" class="beta-notice">SBC-v8 beta - use at your own risk. See disclaimer below.</div>
+    <div style="text-align: center;" class="beta-notice">SBC-v8 beta - use at your own risk, see disclaimer.</div>
 
     <!-- Dropdowns and Custom Inputs -->
     <div style="text-align: center;">
