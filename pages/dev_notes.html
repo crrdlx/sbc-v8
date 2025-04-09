@@ -1,70 +1,117 @@
-﻿﻿<html>
-<head>
-<meta content="text/html" http-equiv="content-type"><title>Satoshi Bitcoin Converter</title>
-<meta charset="utf-8">
-<link rel="manifest" href="manifest.json"> 
-<style type="text/css">
-  body {
-    font-family: "Lucida Sans Unicode", Verdana, "Times New Roman",
-          Times, serif;
-    p {font-size:80%;}
-	color: black;
-    background-color: #f6f6f6 }
-  h1 {
-    font-family: Helvetica, Geneva, Arial,
-          SunSans-Regular, sans-serif }
-  </style>
-  
-<script src="../ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-<script type="text/javascript">var switchTo5x=true;</script>
-<script type="text/javascript" src="../w.sharethis.com/button/buttons.js"></script>
-<script type="text/javascript">stLight.options({publisher: "7d6eba2f-9efd-4a32-baf6-a5255dd85886", doNotHash: false, doNotCopy: false, hashAddressBar: false});</script>
+﻿﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Developer Notes - Satoshi Bitcoin Converter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="manifest" href="manifest.json">
+    <style>
+    body {
+      background: #f6f6f6;
+      max-width: 750px;
+      margin: 40px auto;
+      padding: 0 22px;
+      font: 18px/1.5 -apple-system, BlinkMacSystemFont,
+                   'avenir next', avenir,
+                   'Segoe UI',
+                   'lucida grande',
+                   'helvetica neue', helvetica,
+                   'Fira Sans',
+                   roboto, noto,
+                   'Droid Sans',
+                   cantarell, oxygen, ubuntu,
+                   'franklin gothic medium', 'century gothic',
+                   'Liberation Sans',
+                   sans-serif;
+      color: #222;
+    }
 
-<STYLE>
-<!--
-A{text-decoration:none}
--->
-</STYLE>
-</head>
+    supersize {
+        font-style: normal;
+        font-size: 120%;
+        color: #ff8c00;
+        text-transform: uppercase;
+    }
+    
+    smalltype {
+        font-style: normal;
+        font-size: 65%;
+        color: #000000;
+    }
+          
+    h1, h2, h3, h4, h5, h6 {
+      color: #333333;
+      font-weight: bold;
+      line-height: 1.2;
+      margin-bottom: 1em;
+      margin-top: 2em;
+    }
+    
+    h1 {
+      font-size: 2.2em;
+      text-align: center;
+    }
+    
+    h2 {
+      font-size: 1.8em;
+      border-bottom: solid 0.1rem firebrick;
+    }
+    
+    h3 {
+      font-size: 1.5em;
+    }
+    
+    h4 {
+      font-size: 1.3em;
+      text-decoration: underline;
+    }
+    
+    img.centered {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #mapdiv {
+        width: 100%;
+        max-width: 1000px;
+        height: 450px;
+        margin: 20px auto;
+    }
+    </style>
+    <script src="https://www.amcharts.com/lib/3/ammap.js" type="text/javascript"></script>
+    <script src="https://www.amcharts.com/lib/3/maps/js/worldHigh.js" type="text/javascript"></script>
+    <script src="https://www.amcharts.com/lib/3/themes/dark.js" type="text/javascript"></script>
+  </head>
+
 <body>
-	<div class="w3-container">
+<a name="home_top_page"></a>
+  <center>
+    <div class="w3-container">
       <a href="../index.html" class="w3-button w3-round-large w3-orange">   &#x30B7   Satoshi Bitcoin Converter.com</a><br>
     </div>
-<h1><a href="../index.html">Satoshi Bitcoin Converter</a> - Dev Notes</h1><br>
-<blockquote>
+    <p class="smalltype" style="text-align:center"><smalltype>SBC version 8</smalltype></p>
+  </center>
 
-<i>Howdy. Some notes from, crrdlx, the Satoshi Bitcoin Converter developer:</i>
-<p>
-<h4>Stuck Android app?</h4>
-Best and easiest fix for a stuck Android app: simply <i>uninstall the app</i> and use the <a href="http://satoshibitcoinconverter.com/"><b>Satoshi Bitcoin Converter progressive web app (PWA)</b></a> The PWA is recommended. The older version can still be found there using the "Legacy" link.
-</blockquote>
-<hr>
-<blockquote>
-<span style="font-size:16px; color:red; font-family:Verdana,Arial,sans-serif;">
-If you're using the Android app and are stuck loading...either (a) <u>use the web app linked above</u> (recommended), or (b) you can revert to the older app version, 4.7.1.
-<p>
-Unfortunately, 4.7.1 cannot be placed back onto the Play store because of updated Play store rules (they require that new releases target a newer Android version). Still, you can get 4.7.1 at the developer's (me, crrdlx) GitHub account below.
-<p>
-<p>
-You know that the 4.7.1 version comes from me, crrdlx, the developer, by cross-checking my credentials at <a href="https://www.keybase.io/crrdlx" target="_blank">https://www.keybase.io/crrdlx</a> and at <a href="https://crrdlx.github.io/" target="_blank">https://crrdlx.github.io</a>
-<br>
-<center><span style="font-size:16px; color:black; font-family:Verdana,Arial,sans-serif;">Again, the best solution is to <i>not</i> use the Android app - it is no longer supported. Instead, migrate to the current Progressive Web App (PWA) at <a href="https://satoshibitcoinconverter.com">https://SatoshiBitcoinConverter.com</a></span></center>
-<p>
-</span>
-</blockquote>
+<h3>Developer Notes</h3>
 
-<p></p>
-<hr>
-<h3>A letter from the dev... </h3>
-<blockquote>
-Dear users,
-<p>I initially made this converter in <a href="https://bitcointalk.org/index.php?topic=239948.msg2541921#msg2541921" target="_blank">June of 2013</a> as a website for myself because I kept getting confused with Bitcoin units and prices. Then, I made it into an app and put it on the Google Play store for anyone to use, for free.</p>
-<p>I'm thrilled that this app has had visitors from 134 countries around the world (and I'm sure there are more countries that I've missed). The map below shows the countries using the Satoshi Bitcoin Converter app in glorious bitcoin orange.</p>
+<h4>Android App Status</h4>
+<p style="text-align:left">If you're using the Android app and experiencing loading issues, you have two options:</p>
+<ul>
+  <li><strong>Recommended:</strong> Use the <a href="http://satoshibitcoinconverter.com/">Progressive Web App (PWA)</a></li>
+  <li>Alternatively: Use the legacy version 4.7.1 (no longer on Play Store)</li>
+</ul>
 
-<script src="http://www.amcharts.com/lib/3/ammap.js" type="text/javascript"></script>
-<script src="http://www.amcharts.com/lib/3/maps/js/worldHigh.js" type="text/javascript"></script>
-<script src="http://www.amcharts.com/lib/3/themes/dark.js" type="text/javascript"></script>
-<div id="mapdiv" style="width: 1000px; height: 450px;"></div>
+<p style="text-align:left" class="note">Note: Version 4.7.1 cannot be redistributed on the Play Store due to updated requirements. You can verify the developer's authenticity at <a href="https://www.keybase.io/crrdlx" target="_blank">keybase.io/crrdlx</a> and <a href="https://crrdlx.github.io/" target="_blank">crrdlx.github.io</a></p>
+
+<h4>A Letter from the Developer</h4>
+<p style="text-align:left">I initially created this converter in <a href="https://bitcointalk.org/index.php?topic=239948.msg2541921#msg2541921" target="_blank">June of 2013</a> as a personal tool to help with Bitcoin unit conversions. What started as a simple website evolved into an app on the Google Play store, freely available to all.</p>
+
+<p style="text-align:left">I'm delighted to share that this app has reached users in 134 countries worldwide (and counting). Below is a visualization of our global reach, with participating countries highlighted in Bitcoin orange:</p>
+
+<div id="mapdiv"></div>
+
 <script type="text/javascript">
 var map = AmCharts.makeChart("mapdiv",{
 type: "map",
@@ -677,8 +724,6 @@ rollOverOutlineColor : "#000000"
 });
 </script>
 
-
-
 <p>
 Since many of the nations are developing or are undergoing turmoil in some manner, I trust that the app indeed is doing some good in some way in these places. That makes me 😊
 </p>
@@ -687,35 +732,22 @@ Contact info and other links at: <a href="https://linktr.ee/crrdlx" target="_bla
 Sincerely,
 <p></p>
 <p style="font-family:cursive; color:darkgreen; font-size: 22px;"><big>crrdlx (CR for short)</big></p>
-</blockquote>
-</small>
-</small>
-<p>
-<center>
-<img src="../img/icon_180.png" alt="Shi logo" border="0" width="18">
-</center><p>
 
-
-<!-- Start ichthys link -->
-<hr>
 <center>
-<a href="ichthys.html" target="_blank"><><</a>
+<img src="../img/icon_120.png" border="0" width=18>
 </center>
-<!-- End ichthys link -->
 
+<p style="text-align:center"><a href="#home_top_page">Return to top</a></p>
 
-
-<!-- Start of StatCounter Code for Default Guide -->
+<!-- StatCounter Code -->
 <script type="text/javascript">
 var sc_project=9064341; 
 var sc_invisible=1; 
 var sc_partition=35; 
 var sc_security="4159c4ae"; 
 </script>
-<script type="text/javascript" src="https://www.statcounter.com/counter/counter_xhtml.js"></script><noscript><div class="statcounter"><a href="https://www.statcounter.com/" target="_blank"><img class="statcounter" src="https://c36.statcounter.com/9064341/0/4159c4ae/1/" alt="hit counter html code" ></a></div></noscript>
-<!-- End of StatCounter Code for Default Guide -->
-
+<script type="text/javascript" src="https://www.statcounter.com/counter/counter_xhtml.js"></script>
+<noscript><div class="statcounter"><a href="https://www.statcounter.com/" target="_blank"><img class="statcounter" src="https://c36.statcounter.com/9064341/0/4159c4ae/1/" alt="hit counter html code"></a></div></noscript>
 
 </body>
-
 </html>
