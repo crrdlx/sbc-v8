@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Satoshi Day</title>
+    <title>Satoshi Day - Satoshi Bitcoin Converter</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="manifest" href="manifest.json">
@@ -97,18 +97,45 @@ h6 {
   tr:nth-child(even) {
     background-color: #dddddd;
   }
+
+  .form-container {
+    max-width: 350px;
+    margin: 2em auto;
+    text-align: center;
+  }
+  .form-container table {
+    margin: 0 auto;
+    border-collapse: collapse;
+  }
+  .form-container td {
+    padding: 0.3em 0;
+    text-align: center;
+    background-color: #f6f6f6;  /* Match body background */
+  }
+  .form-container input {
+    text-align: right;  /* Align numbers to the right */
+    width: 150px;       /* Fixed width for alignment */
+    margin-right: 5px;  /* Space between input and label */
+  }
+  .form-container .unit-label {
+    display: inline-block;
+    width: 70px;        /* Fixed width for labels */
+    text-align: left;   /* Align labels to the left */
+  }
   </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   </head>
 <body>
-<big>
-<br>
-<center>
-<div class="w3-container">
-  <a href="../index.html" class="w3-button w3-round-large w3-orange">   &#x30B7   Satoshi Bitcoin Converter   </a>
-</div>
-</center>
-</big>
-<big><b>Satoshi Day</b></big>
+<a name="home_top_page"></a>
+  <center>
+    <div class="w3-container">
+      <a href="../index.html" class="w3-button w3-round-large w3-orange">   &#x30B7   Satoshi Bitcoin Converter.com</a><br>
+    </div>
+    <p class="smalltype" style="text-align:center"><smalltype>SBC version 8</smalltype></p>
+  </center>
+
+<h3>Satoshi Day</h3>
+
 <p>
 <small>
 If Bitcoin indeed goes "to the moon" as many expect, the humble little satoshi will become the unit of trade for everyday matters. Right now, for much of the world, the U.S. dollar is the standard. But, things are changing.
@@ -128,26 +155,101 @@ Read the original post, predict when it will happen, or offer your own suggestio
 <a href="https://www.reddit.com/r/Bitcoin/comments/7flcw4/satoshi_day_when_one_usd_penny_equals_one_satoshi/" target="_blank">Reddit post</a> | <a href="https://bitcointalk.org/index.php?topic=2464147.msg25232749#msg25232749" target="_blank">BitcoinTalk.org post.</a><br> 
 </p>
 
-<h4>How many sats is one penny worth right now?</h4>
-<p>Go to the <a href="../FiatToBTC/USDtoBTC.html">USD to BTC converter</a>. Type in a penny (0.01) in the bottom box to see the current satoshi-to-penny ratio. That's how many sats one penny would buy you right now. Over time, watch the number of sats drop (meaning pennies are <i>less</i> valuable, sats are <i>more</i> valuable). Eventually, when one Bitcon is worth $1M, the penny-to-sat ratio will be 1:1. That'll be <b>Satoshi Day</b>.
-</p>
-<p>
+<h4>Current Satoshi-to-Penny Ratio</h4>
+<p style="text-align: center;">See how many sats one penny is worth right now:</p>
 
+<div class="form-container">
+  <table border="0" cellpadding="0" cellspacing="0">
+    <form name="pennyconverter">
+      <tbody>
+        <tr>
+          <td>
+            <input type="text" inputmode="numeric" onkeyup="usdConvert()" value="0.01" name="usd" size="12">
+            <span class="unit-label">$ USD</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <input type="text" inputmode="numeric" onkeyup="satoshiConvert()" value="" name="satoshi" size="12">
+            <span class="unit-label">シ sats</span>
+          </td>
+        </tr>
+      </tbody>
+    </form>
+  </table>
+</div>
+
+<div style="text-align: center;">
+  <div id="BTCPrice">Loading current price...</div>
+</div>
+<p>
+  Over time, watch the number of sats drop (meaning pennies are <i>less</i> valuable, sats are <i>more</i> valuable). Eventually, when one Bitcoin is worth $1M, the penny-to-sat ratio will be 1:1. That'll be Satoshi Day. 🚀 🌙
+</p>
 
 <center>
-<p>
 <img src="../img/icon_120.png" border="0" width=18>
 </center>
-<!-- Start of StatCounter Code for Default Guide -->
+
+<p style="text-align:center"><a href="#home_top_page">Jump to top of page.</a></p>
+
+<script language="JavaScript">
+  let currentPrice = 0;
+
+  // Initialize on page load
+  $(document).ready(function() {
+    updatePrice();
+  });
+
+  function updatePrice() {
+    $.ajax({
+      url: "https://min-api.cryptocompare.com/data/price?fsym=BTC&tsyms=USD",
+      method: "GET",
+      success: function(data) {
+        currentPrice = parseFloat(data.USD);
+        $("#BTCPrice").text("Current BTC Price: $" + currentPrice.toLocaleString());
+        usdConvert(); // Initial conversion for pre-loaded penny value
+      },
+      error: function() {
+        $("#BTCPrice").text("Error loading price - please refresh");
+      }
+    });
+  }
+
+  function parseNumber(str) {
+    return parseFloat(str.replace(/,/g, "")) || 0;
+  }
+
+  function formatNumber(num, decimals = 0) {
+    return num.toLocaleString("en-US", {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    });
+  }
+
+  function usdConvert() {
+    const form = document.pennyconverter;
+    const usdValue = parseNumber(form.usd.value);
+    const satoshiValue = (usdValue / currentPrice) * 100000000;
+    form.satoshi.value = formatNumber(satoshiValue, 0);
+  }
+
+  function satoshiConvert() {
+    const form = document.pennyconverter;
+    const satoshiValue = parseNumber(form.satoshi.value);
+    const usdValue = (satoshiValue * currentPrice) / 100000000;
+    form.usd.value = formatNumber(usdValue, 2);
+  }
+</script>
+
+<!-- StatCounter Code -->
 <script type="text/javascript">
 var sc_project=9064341; 
 var sc_invisible=1; 
 var sc_partition=35; 
 var sc_security="4159c4ae"; 
 </script>
-<script type="text/javascript" src="https://www.statcounter.com/counter/counter_xhtml.js"></script><noscript><div class="statcounter"><a href="https://www.statcounter.com/" target="_blank"><img class="statcounter" src="https://c36.statcounter.com/9064341/0/4159c4ae/1/" alt="hit counter html code" ></a></div></noscript>
-<!-- End of StatCounter Code for Default Guide -->
-
+<script type="text/javascript" src="https://www.statcounter.com/counter/counter_xhtml.js"></script>
+<noscript><div class="statcounter"><a href="https://www.statcounter.com/" target="_blank"><img class="statcounter" src="https://c36.statcounter.com/9064341/0/4159c4ae/1/" alt="hit counter html code"></a></div></noscript>
 
 </body>
 </html>
