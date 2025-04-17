@@ -30,12 +30,12 @@
     .form-container { max-width: 350px; margin: 0 auto; text-align: left; }
     .form-container td { padding: 0.3em 0; }
     #customCoin, #customFiat { width: 60px; margin: 0.5em; padding: 0.2em; }
-    #coinDisplay { width: 150px; display: inline-block; vertical-align: middle; }
+    #coinDisplay { width: 150px; display: inline-block; vertical-align: middle; } /* Reduced from 200px */
     .beta-notice { font-style: italic; font-size: 0.8em; color: #555; margin: 0.5em 0; }
     .disclaimer { font-style: italic; font-size: 0.8em; color: #555; margin: 1em 0; }
     /* Mobile adjustment */
     @media (max-width: 600px) {
-      .form-container { margin-left: 15%; }
+      .form-container { margin-left: 15%; } /* Shifts form right on mobile */
     }
   </style>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -217,11 +217,9 @@
       // Coin to satoshi and fiat
       function coinConvert() {
         const form = document.unitconverter;
-        const coinValue = form.coin.value.trim();
-        if (!coinValue) return; // Skip if coin field is empty
-        const parsedCoinValue = parseNumber(coinValue);
-        const satoshiValue = parsedCoinValue * altcoinToBtcPrice * 100000000;
-        const fiatValue = parsedCoinValue * currentPrice;
+        const coinValue = parseNumber(form.coin.value);
+        const satoshiValue = coinValue * altcoinToBtcPrice * 100000000;
+        const fiatValue = coinValue * currentPrice;
 
         form.satoshi.value = formatNumber(satoshiValue, 0);
         form.fiatValue.value = formatNumber(fiatValue, 2);
@@ -230,10 +228,8 @@
       // Satoshi to coin and fiat
       function satoshiConvert() {
         const form = document.unitconverter;
-        const satoshiValue = form.satoshi.value.trim();
-        if (!satoshiValue) return; // Skip if satoshi field is empty
-        const parsedSatoshiValue = parseNumber(satoshiValue);
-        const coinValue = parsedSatoshiValue / (altcoinToBtcPrice * 100000000);
+        const satoshiValue = parseNumber(form.satoshi.value);
+        const coinValue = satoshiValue / (altcoinToBtcPrice * 100000000);
         const fiatValue = coinValue * currentPrice;
 
         form.coin.value = formatNumber(coinValue, 8);
@@ -243,10 +239,8 @@
       // Fiat to coin and satoshi
       function fiatConvert() {
         const form = document.unitconverter;
-        const fiatValue = form.fiatValue.value.trim();
-        if (!fiatValue) return; // Skip if fiat field is empty
-        const parsedFiatValue = parseNumber(fiatValue);
-        const coinValue = parsedFiatValue / currentPrice;
+        const fiatValue = parseNumber(form.fiatValue.value);
+        const coinValue = fiatValue / currentPrice;
         const satoshiValue = coinValue * altcoinToBtcPrice * 100000000;
 
         form.coin.value = formatNumber(coinValue, 8);
