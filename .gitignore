@@ -1,6 +1,6 @@
 # Ignore a specific file
-index.html-COINGECKO
-index.html-CRYPTOCOMPARE
+file1.html
+file2.html
 
 # Ignore a directory
 archive/
