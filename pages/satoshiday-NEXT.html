@@ -34,7 +34,11 @@
     #coinDisplay { width: 150px; display: inline-block; vertical-align: middle; }
     .beta-notice { font-style: italic; font-size: 0.8em; color: #555; margin: 0.5em 0; }
     .disclaimer { font-style: italic; font-size: 0.8em; color: #555; margin: 1em 0; }
-    .chart-container { max-width: 600px; margin: 1em auto; }
+    .chart-container {
+      max-width: 600px;
+      margin: 1em auto;
+      height: 400px;
+    }
     @media (max-width: 600px) {
       .form-container { margin-left: 15%; }
       .chart-container { max-width: 100%; }
@@ -92,7 +96,9 @@
       <canvas id="satsRatioChart"></canvas>
     </div>
 
-    <p>Over time, watch the number of sats drop (meaning pennies are less valuable, sats are more valuable). Eventually, when one Bitcoin is worth $1M, the penny-to-sat ratio will be 1:1. That'll be Satoshi Day. 🚀 🌙</p>
+    <p>Over time, watch the number of sats drop (meaning pennies are less valuable, sats are more valuable). Eventually, when one Bitcoin is worth $1M, the penny-to-sat ratio will be 1:1. That'll be Satoshi Day. 
+    </p>
+    <p class="footer">🚀 🌙</p>
 
     <p class="nav-links"><a href="#">Jump to top of page.</a></p>
 
@@ -233,14 +239,18 @@
           },
           options: {
             responsive: true,
+            maintainAspectRatio: false,
             scales: {
               x: {
                 title: { display: true, text: 'Date' },
-                ticks: { maxTicksLimit: 8, callback: function(value, index) { return labels[index]; } }
+                ticks: { maxTicksLimit: 8, callback: function(value, index) { return labels[index]; } },
+                reverse: true
               },
               y: {
                 title: { display: true, text: 'Satoshi per Cent' },
-                beginAtZero: false
+                beginAtZero: false,
+                suggestedMin: Math.min(...ratios) * 0.9,
+                suggestedMax: Math.max(...ratios) * 1.1
               }
             },
             plugins: {
