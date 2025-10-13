@@ -192,7 +192,7 @@
     function init() {
       updatePrices();
       fetchHistoricalData();
-      renderProgressCharts();
+      // progress charts will render after current price loads
     }
 
     function updatePrices() {
@@ -212,6 +212,8 @@
           const form = document.unitconverter;
           form.fiatValue.value = "0.01";
           fiatConvert();
+          // Render charts that depend on currentPrice only after it is available
+          renderProgressCharts();
         },
         error: function(xhr, status, error) {
           $("#coinPrice").text("Error: Unable to fetch prices - check connection or API");
@@ -328,7 +330,7 @@
                suggestedMin: Math.min(...ratios) * 0.9,
                suggestedMax: Math.max(...ratios) * 1.1
              },
-             y1: {
+            y1: {
                type: 'linear',
                display: true,
                position: 'right',
@@ -338,8 +340,8 @@
                  color: '#f28c38'
                },
                beginAtZero: false,
-               suggestedMin: Math.min(ratios.map(ratio => 1 / ratio)) * 0.9,
-               suggestedMax: Math.max(ratios.map(ratio => 1 / ratio)) * 1.1,
+              suggestedMin: Math.min(...ratios.map(ratio => 1 / ratio)) * 0.9,
+              suggestedMax: Math.max(...ratios.map(ratio => 1 / ratio)) * 1.1,
                grid: {
                  drawOnChartArea: false,
                },
@@ -382,6 +384,9 @@
     }
 
     function renderProgressCharts() {
+      if (!currentPrice || !isFinite(currentPrice) || currentPrice <= 0) {
+        return; // wait until price is loaded
+      }
       // Calculate progress based on current price
       const currentRatio = 1000000 / currentPrice; // sats per penny
       const progressPercentage = Math.min((1 / currentRatio) * 100, 100); // Convert to percentage
@@ -400,18 +405,11 @@
           datasets: [{
             label: 'Progress to Satoshi Day',
             data: [0, 0.1, 0.3, 0.8, 2.1, 1.8, 3.2, 4.5, progressPercentage],
-            borderColor: '#ff0000',
-            backgroundColor: 'rgba(255, 0, 0, 0.2)',
+            borderColor: '#f28c38',
+            backgroundColor: 'rgba(242, 140, 56, 0.2)',
             fill: true,
             tension: 0.1
-                     }, {
-             label: 'Target Progress ($1M BTC)',
-             data: [0, 0.1, 0.3, 0.8, 2.1, 1.8, 3.2, 4.5, 10],
-             borderColor: '#f28c38',
-             backgroundColor: 'rgba(242, 140, 56, 0.2)',
-             fill: false,
-             tension: 0.1
-           }]
+          }]
         },
         options: {
           responsive: true,
@@ -490,96 +488,118 @@
          }
        });
 
-       // Create mountain chart
-       const mountainCtx = document.getElementById('mountainChart').getContext('2d');
-       
-       // Create mountain shape data points
-       const mountainData = [];
-       const mountainLabels = [];
-       for (let i = 0; i <= 100; i += 10) {
-         mountainLabels.push(i + 'K');
-         // Create mountain shape: gentle slope up, steeper peak
-         const x = i / 100;
-         let y;
-         if (x < 0.7) {
-           y = Math.pow(x / 0.7, 0.5) * 0.6; // Gentle slope
-         } else {
-           y = 0.6 + Math.pow((x - 0.7) / 0.3, 1.5) * 0.4; // Steeper peak
-         }
-         mountainData.push(y * 100);
-       }
-       
-       new Chart(mountainCtx, {
-         type: 'line',
-         data: {
-           labels: mountainLabels,
-           datasets: [{
-             label: 'Mountain Path',
-             data: mountainData,
-             borderColor: '#8B4513',
-             backgroundColor: 'rgba(139, 69, 19, 0.3)',
-             fill: true,
-             tension: 0.4,
-             pointRadius: 0
-           }, {
-             label: 'Climber Position',
-             data: mountainData.map((_, index) => {
-               const priceAtPoint = (index / 10) * 1000000;
-               return priceAtPoint <= currentPrice ? mountainData[index] : null;
-             }),
-             borderColor: '#FF6B35',
-             backgroundColor: '#FF6B35',
-             pointRadius: 8,
-             pointStyle: 'circle',
-             showLine: false
-           }]
-         },
-         options: {
-           responsive: true,
-           maintainAspectRatio: false,
-           scales: {
-             x: {
-               title: { 
-                 display: true, 
-                 text: 'Bitcoin Price ($K)'
-               },
-               ticks: {
-                 callback: function(value, index) {
-                   return (index * 10) + 'K';
-                 }
-               }
-             },
-             y: {
-               title: { 
-                 display: true, 
-                 text: 'Mountain Height'
-               },
-               beginAtZero: true,
-               max: 100,
-               ticks: {
-                 display: false
-               }
-             }
-           },
-           plugins: {
-             legend: { display: true },
-             title: { 
-               display: true, 
-               text: 'Bitcoin Mountain: Current price $' + currentPrice.toLocaleString() + ' (Climber position shown)'
-             },
-             tooltip: {
-               callbacks: {
-                 label: function(context) {
-                   if (context.dataset.label === 'Climber Position') {
-                     return 'Climber at: $' + currentPrice.toLocaleString();
-                   }
-                   return context.dataset.label;
-                 }
-               }
-             }
-           }
-         }
-       });
+      // Create mountain chart with vertical axis as price up to $1M
+      const mountainCtx = document.getElementById('mountainChart').getContext('2d');
+
+      // X axis will be an arbitrary distance (0-100). Y axis is price ($0 -> $1,000,000)
+      const mountainLabels = Array.from({ length: 101 }, (_, i) => i.toString());
+      const summitPrice = 1000000;
+
+      // Build a smooth ascent curve that reaches $1M at the end (index 100)
+      const mountainData = mountainLabels.map((_, i) => {
+        const x = i / 100; // 0..1
+        // Gentle slope then steeper near the summit, scaled to $1M
+        const baseShape = x < 0.7
+          ? Math.pow(x / 0.7, 0.6) * 0.6
+          : 0.6 + Math.pow((x - 0.7) / 0.3, 1.4) * 0.4;
+        return Math.min(baseShape * summitPrice, summitPrice);
+      });
+
+      // Horizontal marker at the current price
+      const climberLine = Array.from({ length: mountainLabels.length }, () => currentPrice);
+
+      // Single-point marker for the climber at the nearest x-position to current price
+      const climberIndex = mountainData.findIndex(y => y >= currentPrice);
+      const climberX = climberIndex === -1 ? mountainLabels.length - 1 : climberIndex;
+      const climberPoint = mountainLabels.map((_, idx) => (idx === climberX ? currentPrice : null));
+
+      new Chart(mountainCtx, {
+        type: 'line',
+        data: {
+          labels: mountainLabels,
+          datasets: [
+            {
+              label: 'Mountain Path (to $1M)',
+              data: mountainData,
+              borderColor: '#8B4513',
+              backgroundColor: 'rgba(139, 69, 19, 0.25)',
+              fill: true,
+              tension: 0.35,
+              pointRadius: 0
+            },
+            {
+              label: 'Current Price',
+              data: climberLine,
+              borderColor: '#FF6B35',
+              backgroundColor: '#FF6B35',
+              borderWidth: 2,
+              fill: false,
+              pointRadius: 0
+            },
+            {
+              label: 'Climber',
+              data: climberPoint,
+              borderColor: '#FF6B35',
+              backgroundColor: '#FF6B35',
+              pointRadius: 7,
+              pointHoverRadius: 9,
+              showLine: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'Distance to Summit'
+              },
+              ticks: {
+                maxTicksLimit: 6,
+                callback: function(value) { return value + '%'; }
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Bitcoin Price (USD)'
+              },
+              beginAtZero: true,
+              suggestedMax: summitPrice,
+              max: summitPrice,
+              ticks: {
+                callback: function(value) {
+                  if (value >= 1000000) return '$1M';
+                  if (value >= 1000) return '$' + (value / 1000) + 'K';
+                  return '$' + value;
+                }
+              }
+            }
+          },
+          plugins: {
+            legend: { display: true },
+            title: {
+              display: true,
+              text: 'Bitcoin Mountain: $' + currentPrice.toLocaleString() + ' on the ascent to $1,000,000'
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  if (context.dataset.label === 'Current Price') {
+                    return 'Current: $' + currentPrice.toLocaleString();
+                  }
+                  if (context.dataset.label === 'Climber') {
+                    return 'Climber at: $' + currentPrice.toLocaleString();
+                  }
+                  return 'Path: $' + Math.round(context.parsed.y).toLocaleString();
+                }
+              }
+            }
+          }
+        }
+      });
     }
   </script>
 </body>
